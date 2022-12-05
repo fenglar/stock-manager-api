@@ -3,6 +3,7 @@ package pl.marcin.stockmanagerapi.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.services.ProductService;
 
@@ -17,18 +18,17 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> createNewProject(@RequestBody Product product) {
+    @PostMapping()
+    public ResponseEntity<Product> createNewProject(@RequestBody Product product) {
         Product newProduct = productService.saveProduct(product);
-        return new ResponseEntity<Product>(newProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getProjectById(@PathVariable String productId) {
-        Product product = productService.findProductById(productId);
-
-        return new ResponseEntity<Product>(product, HttpStatus.OK);
+    public ResponseEntity<Product> getProjectById(@PathVariable String productId) {
+        Product product = productService.getByProductId(productId);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @GetMapping("/all")
@@ -37,13 +37,13 @@ public class ProductController {
     }
 
     @PatchMapping("{/productId}")
-    public ResponseEntity<?> updateProduct(@RequestBody Product product, @PathVariable String productId) {
-        Product updatedProduct = productService.updateProduct(product, productId);
-        return new ResponseEntity<Product>(updatedProduct, HttpStatus.OK);
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable String productId) {
+        ProductDto updatedProduct = productService.updateProduct(productDto, productId);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteProject(@PathVariable String productId) {
+    public ResponseEntity<String> deleteProject(@PathVariable String productId) {
         productService.deleteProductById(productId);
         return new ResponseEntity<String>("Product with ID" + productId + "was deleted", HttpStatus.OK);
     }

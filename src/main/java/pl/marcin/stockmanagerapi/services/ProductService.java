@@ -1,12 +1,15 @@
 package pl.marcin.stockmanagerapi.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -20,23 +23,24 @@ public class ProductService {
     }
 
     public Product saveProduct(Product newProduct) {
-        newProduct.setName(newProduct.getName());
         return productRepository.save(newProduct);
     }
 
-    public Product updateProduct(Product updatedProduct, String productId){
-        Product product = findProductById(productId);
-        product = updatedProduct;
-        return saveProduct(product);
+    public ProductDto updateProduct(ProductDto productDto, String productId) {
+        Product product = productRepository.findById(productId);
+        product.setName(productDto.getName());
+        product.setQuantity(productDto.getQuantity());
+
+        productRepository.save(product);
+        return productDto;
     }
 
     public void deleteProductById(String productId){
-        productRepository.delete(findProductById(productId));
+        productRepository.delete(getByProductId(productId));
     }
 
-    public Product findProductById(String productId) {
-        Product product = productRepository.findByProductId(productId.toUpperCase());
-        return product;
+    public Product getByProductId(String productId) {
+        return productRepository.findById(productId);
     }
 
 }
