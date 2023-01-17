@@ -7,6 +7,8 @@ import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.services.ProductService;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/product")
@@ -19,33 +21,38 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<Product> createNewProject(@RequestBody Product product) {
-        Product newProduct = productService.saveProduct(product);
-        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> createNewProduct(@RequestBody ProductDto productDto) {
+        Product product = new Product(productDto.getId(), productDto.getName(), productDto.getQuantity());
+        product = productService.saveProduct(product);
+        productDto = new ProductDto(product.getId(), product.getName(), product.getQuantity());
+        return new ResponseEntity(productDto, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getProjectById(@PathVariable String productId) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
         Product product = productService.getByProductId(productId);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        ProductDto productDto = new ProductDto(product.getId(), product.getName(), product.getQuantity());
+        return ResponseEntity.ok(productDto);
     }
 
     @GetMapping("/all")
-    public Iterable<Product> getAllProducts() {
-        return productService.findAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> allProducts = productService.findAllProducts();
+        return ResponseEntity.ok(allProducts);
     }
 
     @PatchMapping("{/productId}")
-    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable String productId) {
-        ProductDto updatedProduct = productService.updateProduct(productDto, productId);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long productId) {
+        Product updatedProduct = productService.updateProduct(new Product(productDto), productId);
+        ProductDto result = new ProductDto(updatedProduct);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteProject(@PathVariable String productId) {
+    public ResponseEntity deleteProduct(@PathVariable Long productId) {
         productService.deleteProductById(productId);
-        return new ResponseEntity<String>("Product with ID" + productId + "was deleted", HttpStatus.OK);
+        return new ResponseEntity("Product with ID" + productId + "was deleted", HttpStatus.OK);
     }
 
 

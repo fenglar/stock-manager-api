@@ -1,15 +1,15 @@
 package pl.marcin.stockmanagerapi.services;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
-@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -18,29 +18,31 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Iterable<Product> findAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDto> findAllProducts() {
+           return productRepository.findAll().stream()
+                .map(product -> new ProductDto(product.getId(), product.getName(), product.getQuantity()))
+                .collect(Collectors.toList());
     }
 
     public Product saveProduct(Product newProduct) {
         return productRepository.save(newProduct);
     }
 
-    public ProductDto updateProduct(ProductDto productDto, String productId) {
+    public ProductDto updateProduct(ProductDto productDto, Long productId) {
         Product product = productRepository.findById(productId);
         product.setName(productDto.getName());
         product.setQuantity(productDto.getQuantity());
 
-        productRepository.save(product);
-        return productDto;
+        return new ProductDto(productRepository.save(product));
     }
 
-    public void deleteProductById(String productId){
+    public void deleteProductById(Long productId) {
         productRepository.delete(getByProductId(productId));
     }
 
-    public Product getByProductId(String productId) {
-        return productRepository.findById(productId);
+    public ProductDto getByProductId(Long productId) {
+        Product product = productRepository.findById(productId);
+        return new ProductDto(product.getId(), product.getName(), product.getQuantity());
     }
 
 }

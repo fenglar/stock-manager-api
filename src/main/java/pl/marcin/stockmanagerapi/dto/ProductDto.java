@@ -4,6 +4,7 @@ package pl.marcin.stockmanagerapi.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.marcin.stockmanagerapi.entity.Product;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,4 +20,7 @@ public class ProductDto {
     private String name;
     private Long quantity;
 
+    public ProductDto(Product updatedProduct) {
+
+    }
 }

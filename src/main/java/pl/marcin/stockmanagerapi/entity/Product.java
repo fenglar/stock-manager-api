@@ -4,11 +4,9 @@ package pl.marcin.stockmanagerapi.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.marcin.stockmanagerapi.dto.ProductDto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -18,11 +16,14 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private String name;
     @NotNull
     private Long quantity;
 
+    public Product(ProductDto productDto) {
+
+    }
 }
