@@ -4,7 +4,6 @@ package pl.marcin.stockmanagerapi.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.marcin.stockmanagerapi.dto.ProductDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,7 +22,4 @@ public class Product {
     @NotNull
     private Long quantity;
 
-    public Product(ProductDto productDto) {
-
-    }
 }

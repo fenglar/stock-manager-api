@@ -6,11 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.marcin.stockmanagerapi.entity.Product;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
