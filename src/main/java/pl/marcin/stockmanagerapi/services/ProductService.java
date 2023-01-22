@@ -1,44 +1,42 @@
 package pl.marcin.stockmanagerapi.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
+import pl.marcin.stockmanagerapi.exception.ProductNotFoundException;
 import pl.marcin.stockmanagerapi.mapper.ProductMapper;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private ProductMapper productMapper;
-
-    ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductMapper productMapper;
 
     public List<ProductDto> findAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::productToProductDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public Product saveProduct(ProductDto productDto) {
+    public ProductDto saveProduct(ProductDto productDto) {
         Product newProduct = productMapper.productDtoToProduct(productDto);
 
-        return productRepository.save(newProduct);
+        return productMapper.productToProductDto(productRepository.save(newProduct));
     }
 
     public ProductDto updateProduct(ProductDto productDto, Long productId) {
-        Product product = productMapper.productDtoToProduct(productDto);
-        Product updatedProduct = productRepository.save(product);
+        Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not found"));
+        productToUpdate.setName(productDto.name());
+        productToUpdate.setQuantity(productDto.quantity());
 
-        return productMapper.productToProductDto(updatedProduct);
+        return productMapper.productToProductDto(productRepository.save(productToUpdate));
     }
 
     @Transactional
@@ -47,8 +45,9 @@ public class ProductService {
     }
 
     public ProductDto getByProductId(Long productId) {
-        Optional<Product> product = productRepository.findById(productId);
-        return productMapper.productToProductDto(product.get());
+        return productRepository.findById(productId)
+                .map(productMapper::productToProductDto)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not exists"));
     }
 
 }

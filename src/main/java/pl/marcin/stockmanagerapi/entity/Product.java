@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @Table(name = "product")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
