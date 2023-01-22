@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+      javax:
+        persistence:
+          schema-generation:
+            database.action: drop-and-create
+            drop-source: script
+            drop-script-source:drop-tables-h2.sql
+  datasource:
+    driver-class-name: org.h2.Driver
+    url:
+    username:
+    password:
+  sql:
+    init:
+      platform: h2
+      mode: embedded
