@@ -2,9 +2,11 @@ package pl.marcin.stockmanagerapi.it;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
@@ -12,9 +14,11 @@ import pl.marcin.stockmanagerapi.services.ProductService;
 
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class ProductControllerIntegrationTest {
 
     @Autowired
@@ -30,12 +34,13 @@ public class ProductControllerIntegrationTest {
     @Test
     public void testCreateNewProduct() throws Exception {
 
+        ResultActions resultActions = mockMvc.perform(post("/api/product")
+                .contentType(MediaType.APPLICATION_JSON));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
-                .contentType(MediaType.APPLICATION_JSON)
-                .andExpect(status().isCreated())
+        resultActions.andExpect(status().isCreated())
                 .andExpect((ResultMatcher) jsonPath("$.name", is("Test Product")))
                 .andExpect((ResultMatcher) jsonPath("$.quantity", is(10L)));
+
     }
 
     @Test
