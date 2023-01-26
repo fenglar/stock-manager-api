@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.marcin.stockmanagerapi.exception.ErrorResponse;
-import pl.marcin.stockmanagerapi.exception.UnknownException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -19,15 +18,9 @@ public class CustomControllerAdvice {
         return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);
     }
 
-    @ExceptionHandler(UnknownException.class)
-    public ResponseEntity<ErrorResponse> handleUnknownExceptions(Exception e) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);
-    }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleExceptions(Exception e) {
+    public ResponseEntity<ErrorResponse> handleExceptions(Exception e) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);

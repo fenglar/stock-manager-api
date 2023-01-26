@@ -5,20 +5,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
-import pl.marcin.stockmanagerapi.exception.ProductNotFoundException;
 import pl.marcin.stockmanagerapi.mapper.ProductMapper;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
+    @Transactional(readOnly = true)
     public List<ProductDto> findAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::productToProductDto)
@@ -32,14 +34,13 @@ public class ProductService {
     }
 
     public ProductDto updateProduct(ProductDto productDto, Long productId) {
-        Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not found"));
+        Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " not found"));
         productToUpdate.setName(productDto.name());
         productToUpdate.setQuantity(productDto.quantity());
 
-        return productMapper.productToProductDto(productRepository.save(productToUpdate));
+        return productMapper.productToProductDto(productToUpdate);
     }
 
-    @Transactional
     public void deleteProductById(Long productId) {
         productRepository.deleteById(productId);
     }
@@ -47,7 +48,7 @@ public class ProductService {
     public ProductDto getByProductId(Long productId) {
         return productRepository.findById(productId)
                 .map(productMapper::productToProductDto)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not exists"));
+                .orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " not exists"));
     }
 
 }

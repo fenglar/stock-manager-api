@@ -19,6 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+
+//@Profile active
+//@ActiveProfiles({"integration-test"})
+//explain profiles
 public class ProductControllerIntegrationTest {
 
     @Autowired
