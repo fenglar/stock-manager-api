@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +39,9 @@ public class ProductServiceTest {
                 new Product(2L, "Product 2", 20L)
         );
         when(productRepository.findAll()).thenReturn(products);
-
+        ProductDto productDto1 = new ProductDto(1L, "Product 1", 10L);
+        ProductDto productDto2 = new ProductDto(2L, "Product 2", 20L);
+        when(productMapper.productToProductDto(any(Product.class))).thenReturn(productDto1, productDto2);
         //when
         List<ProductDto> result = productService.findAllProducts();
 
@@ -76,7 +79,7 @@ public class ProductServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(expectedProduct));
         expectedProduct.setName("Product 1 update");
         expectedProduct.setQuantity(20L);
-        when(productRepository.save(any())).thenReturn(expectedProduct);
+        lenient().when(productRepository.save(any())).thenReturn(expectedProduct);
         ProductDto expectedProductDto = new ProductDto(1L, "Product 1 update", 20L);
         when(productMapper.productToProductDto(any())).thenReturn(expectedProductDto);
 
