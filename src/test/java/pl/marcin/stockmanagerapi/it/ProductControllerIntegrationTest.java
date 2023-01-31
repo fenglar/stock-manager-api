@@ -3,16 +3,17 @@ package pl.marcin.stockmanagerapi.it;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.marcin.stockmanagerapi.StockManagerApiApplication;
+import pl.marcin.stockmanagerapi.config.TestContainerInitializer;
 import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
@@ -27,9 +28,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes = {StockManagerApiApplication.class},
+        initializers = {TestContainerInitializer.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 //explain profiles
 public class ProductControllerIntegrationTest {
 
