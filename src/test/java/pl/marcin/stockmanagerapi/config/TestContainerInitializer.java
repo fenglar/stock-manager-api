@@ -7,30 +7,30 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+
 @Configuration
 public class TestContainerInitializer implements ApplicationContextInitializer<GenericApplicationContext> {
 
     @Override
     public void initialize(GenericApplicationContext applicationContext) {
-        new MySqlDatabaseInitializer(applicationContext);
+        new MySqlDatabaseInitializer().initialize(applicationContext);
     }
 
     static class MySqlDatabaseInitializer {
-        private final DockerImageName mySqlImage;
-        private final MySQLContainer mySQLContainer;
+        private static final DockerImageName mySqlImage = DockerImageName.parse("mysql:8.0.32")
+                .asCompatibleSubstituteFor("testdb");
+        private static final MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(mySqlImage)
+                .withDatabaseName("testdb")
+                .withUsername("sa")
+                .withPassword("sa")
+                .withInitScript("data-h2.sql")
+                ;
 
-        public MySqlDatabaseInitializer(GenericApplicationContext applicationContext) {
-            mySqlImage = DockerImageName.parse("mysql:8.0.32")
-                    .asCompatibleSubstituteFor("testdb");
-
-            mySQLContainer = (MySQLContainer) new MySQLContainer(mySqlImage)
-                    .withDatabaseName("testdb")
-                    .withUsername("sa")
-                    .withPassword("")
-                    .withInitScript("scripts/data-h2.sql");
-
+        static {
             mySQLContainer.start();
+        }
 
+        public void initialize(GenericApplicationContext applicationContext) {
             TestPropertyValues.of(
                     "spring.datasource.jdbc-url=" + mySQLContainer.getJdbcUrl(),
                     "spring.datasource.url=" + mySQLContainer.getJdbcUrl(),

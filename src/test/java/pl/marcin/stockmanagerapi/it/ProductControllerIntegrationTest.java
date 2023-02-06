@@ -21,10 +21,9 @@ import pl.marcin.stockmanagerapi.services.ProductService;
 
 import java.util.List;
 
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         initializers = {TestContainerInitializer.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
-//explain profiles
 public class ProductControllerIntegrationTest {
 
     @Autowired
@@ -56,18 +54,18 @@ public class ProductControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(new ProductDto(3L, "Test Product 3", 30L))));
 
         resultActions.andExpect(status().isCreated())
-                .andExpect((ResultMatcher) jsonPath("$.name", is("Test Product3")))
-                .andExpect((ResultMatcher) jsonPath("$.quantity", is(30L)));
+                .andExpect(jsonPath("$.name").value("Test Product3"))
+                .andExpect(jsonPath("$.quantity").value(30L));
 
     }
 
     @Test
     public void testGetProductById() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/product/").param("id", "1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/product/1").param("id", "1"))
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$.name", is("Test Product")))
-                .andExpect((ResultMatcher) jsonPath("$.quantity", is(10L)));
+                .andExpect(jsonPath("$.name").value("Test Product"))
+                .andExpect(jsonPath("$.quantity").value(10L));
     }
 
     @Test
@@ -76,11 +74,11 @@ public class ProductControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/product/all"))
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$", hasSize(allProducts.size())))
-                .andExpect((ResultMatcher) jsonPath("$[0].name", is("Test Product 1")))
-                .andExpect((ResultMatcher) jsonPath("$[0].quantity", is(10L)))
-                .andExpect((ResultMatcher) jsonPath("$[1].name", is("Test Product 2")))
-                .andExpect((ResultMatcher) jsonPath("$[1].quantity", is(20L)));
+                .andExpect( jsonPath("$", hasSize(allProducts.size())))
+                .andExpect( jsonPath("$[0].name").value("Test Product 1"))
+                .andExpect( jsonPath("$[0].quantity").value(10L))
+                .andExpect( jsonPath("$[1].name").value("Test Product 2"))
+                .andExpect( jsonPath("$[1].quantity").value(20L));
     }
 
     @Test
