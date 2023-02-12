@@ -11,6 +11,7 @@ import pl.marcin.stockmanagerapi.mapper.ProductMapper;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 import pl.marcin.stockmanagerapi.services.ProductService;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +36,12 @@ public class ProductServiceTest {
     public void shouldFindAllProducts() {
         //given
         List<Product> products = Arrays.asList(
-                new Product(1L, "Product 1", 10L),
-                new Product(2L, "Product 2", 20L)
+                new Product(1L, "Product 1", BigDecimal.TEN, 10L),
+                new Product(2L, "Product 2", BigDecimal.valueOf(20), 20L)
         );
         when(productRepository.findAll()).thenReturn(products);
-        ProductDto productDto1 = new ProductDto(1L, "Product 1", 10L);
-        ProductDto productDto2 = new ProductDto(2L, "Product 2", 20L);
+        ProductDto productDto1 = new ProductDto(1L, "Product 1",BigDecimal.TEN, 10L);
+        ProductDto productDto2 = new ProductDto(2L, "Product 2", BigDecimal.valueOf(20), 20L);
         when(productMapper.productToProductDto(any(Product.class))).thenReturn(productDto1, productDto2);
         //when
         List<ProductDto> result = productService.findAllProducts();
@@ -56,8 +57,8 @@ public class ProductServiceTest {
     @Test
     public void shouldSaveProduct() {
         //given
-        ProductDto productDto = new ProductDto(1L, "Product 1", 10L);
-        Product product = new Product(1L, "Product 1", 10L);
+        ProductDto productDto = new ProductDto(1L, "Product 1", BigDecimal.TEN, 10L);
+        Product product = new Product(1L, "Product 1", BigDecimal.valueOf(10), 10L);
         when(productMapper.productDtoToProduct(productDto)).thenReturn(product);
         when(productRepository.save(product)).thenReturn(product);
         when(productMapper.productToProductDto(product)).thenReturn(productDto);
@@ -74,13 +75,14 @@ public class ProductServiceTest {
     @Test
     public void shouldUpdateProduct() {
         //given
-        ProductDto productDto = new ProductDto(null, "Product 1 update", 20L);
-        Product expectedProduct = new Product(1L, "Product 1", 10L);
+        ProductDto productDto = new ProductDto(null, "Product 1 update", BigDecimal.valueOf(20), 20L);
+        Product expectedProduct = new Product(1L, "Product 1", BigDecimal.TEN, 10L);
         when(productRepository.findById(1L)).thenReturn(Optional.of(expectedProduct));
         expectedProduct.setName("Product 1 update");
+        expectedProduct.setPrice(BigDecimal.valueOf(20));
         expectedProduct.setQuantity(20L);
         lenient().when(productRepository.save(any())).thenReturn(expectedProduct);
-        ProductDto expectedProductDto = new ProductDto(1L, "Product 1 update", 20L);
+        ProductDto expectedProductDto = new ProductDto(1L, "Product 1 update",BigDecimal.valueOf(20), 20L);
         when(productMapper.productToProductDto(any())).thenReturn(expectedProductDto);
 
         //when

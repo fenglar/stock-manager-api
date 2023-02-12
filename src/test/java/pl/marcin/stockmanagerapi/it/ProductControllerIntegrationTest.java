@@ -19,6 +19,7 @@ import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 import pl.marcin.stockmanagerapi.services.ProductService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -51,7 +52,7 @@ public class ProductControllerIntegrationTest {
 
         ResultActions resultActions = mockMvc.perform(post("/api/product")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ProductDto(3L, "Test Product 3", 30L))));
+                .content(objectMapper.writeValueAsString(new ProductDto(3L, "Test Product 3", BigDecimal.TEN,30L))));
 
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Test Product3"))

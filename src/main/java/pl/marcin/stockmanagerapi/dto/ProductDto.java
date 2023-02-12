@@ -1,4 +1,7 @@
 package pl.marcin.stockmanagerapi.dto;
 
-public record ProductDto(Long id, String name, Long quantity) {
+
+import java.math.BigDecimal;
+
+public record ProductDto(Long id, String name, BigDecimal price, Long quantity) {
 }

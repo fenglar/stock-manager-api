@@ -18,7 +18,6 @@ public class CustomControllerAdvice {
         return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);
     }
 
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleExceptions(Exception e) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

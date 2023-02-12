@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -19,6 +20,8 @@ public class Product {
     private Long id;
     @NotNull
     private String name;
+    @NotNull
+    private BigDecimal price;
     @NotNull
     private Long quantity;
 
