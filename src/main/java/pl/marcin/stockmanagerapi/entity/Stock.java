@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 
 @Data
 @Entity
@@ -14,8 +16,12 @@ import javax.persistence.*;
 public class Stock {
     @Id
     private Long id;
-    private Long availableQuantity;
-    private Long reservedQuantity;
+    @NotNull
+    @Column(nullable = false)
+    private Long currentQuantity;
+    @NotNull
+    @Column(nullable = false)
+    private long reservedQuantity = 0L;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;

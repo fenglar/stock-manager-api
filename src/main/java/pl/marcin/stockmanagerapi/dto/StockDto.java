@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class StockDto {
     Long id;
-    Long availableQuantity;
+    Long currentQuantity;
     Long reservedQuantity;
+    Long availableQuantity;
     ProductDto productDto;
 
 }
