@@ -10,6 +10,8 @@ import pl.marcin.stockmanagerapi.mapper.StockMapper;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 import pl.marcin.stockmanagerapi.repository.StockRepository;
 
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +33,16 @@ public class StockService {
         stockOfProduct.setReservedQuantity(stockOfProduct.getReservedQuantity() + quantity);
 
         return stockMapper.StockToStockDto(stockOfProduct);
+    }
+
+    public void updateQuantity(Map<Long, Long> cancelledProducts) {
+        for (Map.Entry<Long, Long> entry : cancelledProducts.entrySet()) {
+            Long productId = entry.getKey();
+            Long quantity = entry.getValue();
+            Stock stockOfProduct = stockRepository.findByProduct(productId);
+            stockOfProduct.setCurrentQuantity(stockOfProduct.getCurrentQuantity() + quantity);
+             stockMapper.StockToStockDto(stockOfProduct);
+        }
+
     }
 }
