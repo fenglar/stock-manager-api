@@ -8,6 +8,5 @@ public class StockDto {
     Long currentQuantity;
     Long reservedQuantity;
     Long availableQuantity;
-    ProductDto productDto;
 
 }

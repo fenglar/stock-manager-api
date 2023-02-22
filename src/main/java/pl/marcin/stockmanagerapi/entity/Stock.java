@@ -19,10 +19,7 @@ public class Stock {
     @NotNull
     @Column(nullable = false)
     private Long currentQuantity;
-    @NotNull
-    @Column(nullable = false)
-    private long reservedQuantity = 0L;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 }

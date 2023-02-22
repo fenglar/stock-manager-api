@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class OrderReservationDto {
-    Long quantity;
+    Long reservedQuantity;
+    ProductDto productDto;
 
 }

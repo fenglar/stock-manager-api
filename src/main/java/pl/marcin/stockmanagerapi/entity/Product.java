@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
+
 
 @Data
 @Entity
@@ -22,7 +24,7 @@ public class Product {
     private String name;
     @NotNull
     private BigDecimal price;
-    @NotNull
-    private Long quantity;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Stock> stock;
 
 }
