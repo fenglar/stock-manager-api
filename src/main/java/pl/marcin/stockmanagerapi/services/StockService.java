@@ -30,7 +30,7 @@ public class StockService {
     @Transactional
     public StockDto reserveQuantity(Long productId, Long quantity) {
         Stock stockOfProduct = stockRepository.findByProduct(productId);
-        stockOfProduct.setReservedQuantity(stockOfProduct.getReservedQuantity() + quantity);
+//        stockOfProduct.setReservedQuantity(stockOfProduct.getReservedQuantity() + quantity);
 
         return stockMapper.StockToStockDto(stockOfProduct);
     }

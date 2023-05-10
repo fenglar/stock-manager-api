@@ -5,10 +5,10 @@ import org.mapstruct.Mapping;
 import pl.marcin.stockmanagerapi.dto.StockDto;
 import pl.marcin.stockmanagerapi.entity.Stock;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface StockMapper {
 
-    @Mapping(target = "availableQuantity", expression = "java(stock.getCurrentQuantity() - stock.getReservedQuantity())")
+//    @Mapping(target = "availableQuantity", expression = "java(stock.getCurrentQuantity() - stock.getReservedQuantity())")
     StockDto StockToStockDto(Stock stock);
 
     Stock StockDtoToStock(StockDto stockDto);
