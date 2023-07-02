@@ -30,7 +30,8 @@ public class ProductService {
     public ProductDto saveProduct(ProductDto productDto) {
         Product newProduct = productMapper.productDtoToProduct(productDto);
 
-        return productMapper.productToProductDto(productRepository.save(newProduct));
+        Product savedProduct = productRepository.save(newProduct);
+        return productMapper.productToProductDto(savedProduct);
     }
 
     public ProductDto updateProduct(ProductDto productDto, Long productId) {

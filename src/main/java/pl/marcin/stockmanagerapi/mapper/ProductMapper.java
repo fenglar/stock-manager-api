@@ -6,6 +6,9 @@ import pl.marcin.stockmanagerapi.entity.OrderReservation;
 import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.entity.Stock;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @Mapper(componentModel = "spring")
 public abstract class ProductMapper {
@@ -18,8 +21,16 @@ public abstract class ProductMapper {
                                             Long reservedQuantity);
 
     public ProductDto productToProductDto(Product product) {
-        Long currentQuantity = product.getStock().stream().mapToLong(Stock::getCurrentQuantity).sum();
-        Long reservedQuantity = product.getOrderReservations().stream().mapToLong(OrderReservation::getReservedQuantity).sum();
+        Long currentQuantity = Optional.ofNullable(product.getStock())
+                .stream()
+                .flatMap(List::stream)
+                .mapToLong(Stock::getCurrentQuantity)
+                .sum();
+        Long reservedQuantity = Optional.ofNullable(product.getOrderReservations())
+                .stream()
+                .flatMap(List::stream)
+                .mapToLong(OrderReservation::getReservedQuantity)
+                .sum();
         Long availableQuantity = currentQuantity - reservedQuantity;
         return productToProductDto(product, currentQuantity, availableQuantity, reservedQuantity);
     }
