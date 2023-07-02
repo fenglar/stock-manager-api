@@ -3,9 +3,12 @@ package pl.marcin.stockmanagerapi.web;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.marcin.stockmanagerapi.dto.StockDto;
+import pl.marcin.stockmanagerapi.entity.Stock;
 import pl.marcin.stockmanagerapi.services.StockService;
 
+import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/stock")
@@ -22,15 +25,25 @@ public class StockController {
         return ResponseEntity.ok(stockService.getStock(productId));
     }
 
-    @PostMapping("/{productId}/{quantity}")
-    public ResponseEntity<StockDto> reserveQuantityOfProduct(@PathVariable Long productId, @PathVariable Long quantity) {
-        return ResponseEntity.ok(stockService.reserveQuantity(productId, quantity));
+    @GetMapping("/allproducts")
+    public ResponseEntity<List<StockDto>> getAllStocks() {
+        return ResponseEntity.ok(stockService.getStocks());
     }
 
-    @PatchMapping("/cancel")
-    public ResponseEntity<String> updateQuantity(@RequestBody Map<Long, Long> cancelledProducts) {
-        stockService.updateQuantity(cancelledProducts);
-        return ResponseEntity.ok("Quantity of products that have been cancelled are back again in stock!");
+    @PostMapping()
+    public ResponseEntity<StockDto> createNewStock(@RequestBody StockDto stockDto) {
+        return ResponseEntity.ok(stockService.createStock(stockDto));
     }
 
+    @PutMapping("/{productId}/{quantity}")
+    public ResponseEntity<StockDto> updateStock(@PathVariable Long productId, @PathVariable Long quantity) {
+        StockDto updatedStockDto = stockService.updateStock(productId, quantity);
+        return ResponseEntity.ok(updatedStockDto);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteStock(@PathVariable Long productId) {
+        stockService.deleteStock(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

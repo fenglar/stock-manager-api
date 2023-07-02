@@ -10,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.marcin.stockmanagerapi.StockManagerApiApplication;
 import pl.marcin.stockmanagerapi.config.TestContainerInitializer;
@@ -48,11 +47,11 @@ public class ProductControllerIntegrationTest {
 
 
     @Test
-    public void testCreateNewProduct() throws Exception {
+     void testCreateNewProduct() throws Exception {
 
         ResultActions resultActions = mockMvc.perform(post("/api/product")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ProductDto(3L, "Test Product 3", BigDecimal.TEN,30L))));
+                .content(objectMapper.writeValueAsString(new ProductDto(3L, "Test Product 3", BigDecimal.TEN,30L,10L, 20L))));
 
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Test Product3"))
@@ -61,7 +60,7 @@ public class ProductControllerIntegrationTest {
     }
 
     @Test
-    public void testGetProductById() throws Exception {
+     void testGetProductById() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/product/1").param("id", "1"))
                 .andExpect(status().isOk())
@@ -70,7 +69,7 @@ public class ProductControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllProducts() throws Exception {
+     void testGetAllProducts() throws Exception {
         List<Product> allProducts = productRepository.findAll();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/product/all"))
@@ -83,8 +82,8 @@ public class ProductControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteProduct() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/product/2"))
+     void testDeleteProduct() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/product/2"))
                 .andExpect(status().isOk());
     }
 }

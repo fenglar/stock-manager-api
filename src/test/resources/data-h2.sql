@@ -1,4 +1,3 @@
-
 create table product
 (
     id       bigint auto_increment

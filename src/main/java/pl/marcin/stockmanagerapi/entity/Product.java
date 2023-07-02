@@ -24,7 +24,9 @@ public class Product {
     private String name;
     @NotNull
     private BigDecimal price;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product")
     private List<Stock> stock;
+    @OneToMany(mappedBy = "product")
+    private List<OrderReservation> orderReservations;
 
 }

@@ -10,7 +10,7 @@ import pl.marcin.stockmanagerapi.mapper.StockMapper;
 import pl.marcin.stockmanagerapi.repository.ProductRepository;
 import pl.marcin.stockmanagerapi.repository.StockRepository;
 
-import java.util.Map;
+import java.util.List;
 
 
 @Service
@@ -22,27 +22,35 @@ public class StockService {
     private final StockMapper stockMapper;
 
     public StockDto getStock(Long productId) {
+        Stock stock = stockRepository.findByProductId(productId);
+        return stockMapper.stockToStockDto(stock);
+    }
 
-        Stock stock = stockRepository.findByProduct(productId);
-        return stockMapper.StockToStockDto(stock);
+    public List<StockDto> getStocks() {
+        List<Stock> stocks = stockRepository.findAll();
+        return stockMapper.stocksToStockDto(stocks);
     }
 
     @Transactional
-    public StockDto reserveQuantity(Long productId, Long quantity) {
-        Stock stockOfProduct = stockRepository.findByProduct(productId);
-        stockOfProduct.setReservedQuantity(stockOfProduct.getReservedQuantity() + quantity);
+    public StockDto createStock(StockDto stockDto) {
+        Stock stock = stockMapper.stockDtoToStock(stockDto);
+        Stock savedStock = stockRepository.save(stock);
 
-        return stockMapper.StockToStockDto(stockOfProduct);
+        return stockMapper.stockToStockDto(savedStock);
     }
 
-    public void updateQuantity(Map<Long, Long> cancelledProducts) {
-        for (Map.Entry<Long, Long> entry : cancelledProducts.entrySet()) {
-            Long productId = entry.getKey();
-            Long quantity = entry.getValue();
-            Stock stockOfProduct = stockRepository.findByProduct(productId);
-            stockOfProduct.setCurrentQuantity(stockOfProduct.getCurrentQuantity() + quantity);
-             stockMapper.StockToStockDto(stockOfProduct);
-        }
+    @Transactional
+    public StockDto updateStock(Long productId, Long quantity) {
+        Stock stock = stockRepository.findByProductId(productId);
+        stock.setCurrentQuantity(quantity);
+        Stock updatedStock = stockRepository.save(stock);
 
+        return stockMapper.stockToStockDto(updatedStock);
+    }
+
+    @Transactional
+    public void deleteStock(Long productId) {
+        Stock stock = stockRepository.findByProductId(productId);
+        stockRepository.delete(stock);
     }
 }

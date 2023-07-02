@@ -25,8 +25,8 @@ public class OrderReservation {
     private Long id;
     @NotNull
     @Column(nullable = false)
-    private long reservedQuantity = 0L;
-    @ManyToOne(cascade = CascadeType.ALL)
+    private long reservedQuantity;
+    @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 

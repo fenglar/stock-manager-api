@@ -37,7 +37,6 @@ public class ProductService {
         Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " not found"));
         productToUpdate.setName(productDto.name());
         productToUpdate.setPrice(productDto.price());
-        productToUpdate.setQuantity(productDto.quantity());
 
         return productMapper.productToProductDto(productToUpdate);
     }
