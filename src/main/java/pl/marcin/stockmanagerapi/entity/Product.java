@@ -26,6 +26,8 @@ public class Product {
     private BigDecimal price;
     @OneToMany(mappedBy = "product")
     private List<Stock> stock;
+
+    //loop here?
     @OneToMany(mappedBy = "product")
     private List<OrderReservation> orderReservations;
 

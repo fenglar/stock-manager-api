@@ -2,6 +2,8 @@ package pl.marcin.stockmanagerapi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,14 +17,15 @@ import pl.marcin.stockmanagerapi.services.ProductService;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +37,9 @@ public class ProductServiceTest {
     ProductMapper productMapper;
     @InjectMocks
     ProductService productService;
+
+    @Captor
+    private ArgumentCaptor<Product> productArgumentCaptor;
 
     @Test
     void shouldFindAllProducts() {
@@ -118,6 +124,22 @@ public class ProductServiceTest {
         assertEquals(10, result.currentQuantity());
         assertEquals(5, result.reservedQuantity());
         assertEquals(5, result.availableQuantity());
+
+        // then by ArgumentCaptor
+        verify(productRepository).save(productArgumentCaptor.capture());
+        Product capturedProduct = productArgumentCaptor.getValue();
+        assertEquals("Product 1", capturedProduct.getName());
+        assertEquals(BigDecimal.valueOf(10), capturedProduct.getPrice());
+
+        List<Stock> capturedStockList = capturedProduct.getStock();
+        assertNotNull(capturedStockList);
+        assertEquals(2, capturedStockList.size());
+
+        //operation to check if data has been saved
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        Optional<Product> savedProduct = productRepository.findById(1L);
+
+        assertEquals(product, savedProduct.orElse(null));
     }
 
     @Test
