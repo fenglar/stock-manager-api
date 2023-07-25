@@ -11,9 +11,4 @@ import javax.persistence.QueryHint;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
-    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    @Query("SELECT product FROM Product product WHERE product.productId = :productId")
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "5000")})
-    Product findByProductId(Long productId, LockModeType lockMode);
 }
