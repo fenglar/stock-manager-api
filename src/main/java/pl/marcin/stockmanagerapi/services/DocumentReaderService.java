@@ -21,19 +21,25 @@ public class DocumentReaderService {
         this.fileProcessorService = fileProcessorService;
     }
 
+    /*
+     * 1 - Install docker desktop -> take care
+     * 2 - Create an integration test for this method - Connecting to DB using test-container and no mocks
+     */
+
     @Transactional
     public void readCSV(MultipartFile file) {
 
         try (CSVReader reader = new CSVReader(new FileReader((File) file))) {
 
             List<String[]> rows = reader.readAll();
-
+//start sw
             for (String[] row : rows) {
                 long productId = Long.parseLong(row[0]);
                 long quantity = Long.parseLong(row[1]);
 
                 fileProcessorService.processCSVLine(productId, quantity);
             }
+//stop sw
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvException e) {
