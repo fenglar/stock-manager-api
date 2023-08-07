@@ -22,7 +22,8 @@ public class StockService {
     private final StockMapper stockMapper;
 
     public StockDto getStock(Long productId) {
-        Stock stock = stockRepository.findByProductId(productId);
+        Stock stock = stockRepository.findByProductId(productId).orElse(
+        null);
         return stockMapper.stockToStockDto(stock);
     }
 
@@ -41,7 +42,7 @@ public class StockService {
 
     @Transactional
     public StockDto updateStock(Long productId, Long quantity) {
-        Stock stock = stockRepository.findByProductId(productId);
+        Stock stock = stockRepository.findByProductId(productId).orElse(null);
         stock.setCurrentQuantity(quantity);
         Stock updatedStock = stockRepository.save(stock);
 
@@ -50,7 +51,7 @@ public class StockService {
 
     @Transactional
     public void deleteStock(Long productId) {
-        Stock stock = stockRepository.findByProductId(productId);
+        Stock stock = stockRepository.findByProductId(productId).orElse(null);
         stockRepository.delete(stock);
     }
 }

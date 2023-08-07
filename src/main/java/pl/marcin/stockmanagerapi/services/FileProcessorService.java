@@ -18,9 +18,13 @@ public class FileProcessorService {
         this.stockRepository = stockRepository;
     }
 
-
+//async
     public void processCSVLine(Long productId, Long quantity) {
-        Stock stock = stockRepository.findByProductId(productId);
+        Stock stock = stockRepository.findByProductId(productId).orElse(
+                Stock.builder()
+                        .productId(productId)
+                        .currentQuantity(0L)
+                        .build());
         stock.setCurrentQuantity(stock.getCurrentQuantity() + quantity);
         stockRepository.save(stock);
     }

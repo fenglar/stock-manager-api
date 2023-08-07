@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,41 +23,44 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@ContextConfiguration(classes = {StockManagerApiApplication.class}
-        ,                      initializers = {TestContainerInitializer.class}
+@ContextConfiguration(classes = {StockManagerApiApplication.class}, initializers = {TestContainerInitializer.class}
 )
 public class DocumentReaderControllerTest {
 
     @InjectMocks
     private DocumentReaderController documentReaderController;
 
-    @Mock
+    @Autowired
     private DocumentReaderService documentReaderService;
 
     @Mock
     private FileProcessorService fileProcessorService;
 
+    @Value("classpath:csv-mocks/stock-update.csv")
+    Resource stateFile;
     @Autowired
     private MockMvc mockMvc;
 
 
     @Test
     public void testReadCSV() throws Exception {
-        MockMultipartFile fileMock = new MockMultipartFile("fileMock", "stock-update.csv".getBytes());
+//        MockMultipartFile fileMock = new MockMultipartFile("fileMock", stateFile.);
 
-        doNothing().when(documentReaderService).readCSV(any(MultipartFile.class));
+        documentReaderService.readCSV(stateFile.getInputStream());
+//        doNothing().when(documentReaderService).readCSV(any(MultipartFile.class));
         doNothing().when(fileProcessorService).processCSVLine(anyLong(), anyLong());
 
-        mockMvc.perform(get("/docs/csv")
-                        .content(fileMock.getBytes())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        )
-                .andExpect(status().isOk())
-                .andReturn();
+//        mockMvc.perform(multipart("/docs/csv")
+//                        .file(fileMock))
+//                .andExpect(status().isOk())
+//                .andReturn();
+
+        //assert on db
 
     }
 

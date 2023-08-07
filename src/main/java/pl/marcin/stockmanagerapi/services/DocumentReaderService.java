@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 @Service
@@ -27,9 +25,9 @@ public class DocumentReaderService {
      */
 
     @Transactional
-    public void readCSV(MultipartFile file) {
+    public void readCSV(InputStream file) {
 
-        try (CSVReader reader = new CSVReader(new FileReader((File) file))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(file))) {
 
             List<String[]> rows = reader.readAll();
 //start sw
