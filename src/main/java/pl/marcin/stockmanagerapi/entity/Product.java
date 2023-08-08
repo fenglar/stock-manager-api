@@ -27,7 +27,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Stock> stock;
 
-    //loop here?
     @OneToMany(mappedBy = "product")
     private List<OrderReservation> orderReservations;
 

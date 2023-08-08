@@ -1,14 +1,18 @@
 package pl.marcin.stockmanagerapi.services;
 
+import com.google.common.base.Stopwatch;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class DocumentReaderService {
 
@@ -19,10 +23,6 @@ public class DocumentReaderService {
         this.fileProcessorService = fileProcessorService;
     }
 
-    /*
-     * 1 - Install docker desktop -> take care
-     * 2 - Create an integration test for this method - Connecting to DB using test-container and no mocks
-     */
 
     @Transactional
     public void readCSV(InputStream file) {
@@ -30,14 +30,20 @@ public class DocumentReaderService {
         try (CSVReader reader = new CSVReader(new InputStreamReader(file))) {
 
             List<String[]> rows = reader.readAll();
-//start sw
+
+            Stopwatch stopwatch = Stopwatch.createStarted();
+
             for (String[] row : rows) {
                 long productId = Long.parseLong(row[0]);
                 long quantity = Long.parseLong(row[1]);
 
                 fileProcessorService.processCSVLine(productId, quantity);
             }
-//stop sw
+            stopwatch.stop();
+            long elapsedMillis = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+
+            log.info("######################################### " + elapsedMillis);
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvException e) {
