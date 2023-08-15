@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 
@@ -17,9 +18,9 @@ public class TestContainerInitializer implements ApplicationContextInitializer<G
     }
 
     static class MySqlDatabaseInitializer {
-        private static final DockerImageName mySqlImage = DockerImageName.parse("mysql:8.0.32")
-                .asCompatibleSubstituteFor("testdb");
-        private static final MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(mySqlImage)
+        private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgis/postgis:15-3.3")
+                .asCompatibleSubstituteFor("postgres");
+        private static final PostgreSQLContainer mySQLContainer = new PostgreSQLContainer<>(POSTGRES_IMAGE)
                 .withDatabaseName("testdb")
                 .withUsername("sa")
                 .withPassword("sa")

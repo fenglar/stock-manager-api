@@ -43,7 +43,7 @@ public class DocumentReaderServiceIntegrationTest {
     }
 
     @Test
-    public void testReadCSVAndProcess() throws IOException {
+    public void testReadCSVAndProcess() throws IOException, InterruptedException {
         //given
         ClassPathResource resource = new ClassPathResource("csv-mocks/stock-update.csv");
         InputStream inputStream = resource.getInputStream();
@@ -63,6 +63,10 @@ public class DocumentReaderServiceIntegrationTest {
         Stock stock3 = stockRepository.findByProductId(3L).orElse(null);
         Assertions.assertNotNull(stock3);
         Assertions.assertEquals(18L, stock3.getCurrentQuantity());
+
+        Stock stock6 = stockRepository.findByProductId(6L).orElse(null);
+        Assertions.assertNotNull(stock6);
+        Assertions.assertEquals(20L, stock6.getCurrentQuantity());
     }
 
 }

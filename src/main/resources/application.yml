@@ -10,11 +10,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-  data:
-    jpa:
-      repositories:
-        enabled: true
+#    database-platform: org.hibernate.dialect.MySQL55Dialect
 
 springdoc:
   swagger-ui:

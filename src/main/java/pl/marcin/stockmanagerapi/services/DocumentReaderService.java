@@ -5,11 +5,14 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -24,10 +27,10 @@ public class DocumentReaderService {
     }
 
 
-    @Transactional
     public void readCSV(InputStream file) {
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(file))) {
+            ExecutorService executors = Executors.newFixedThreadPool(10);
 
             List<String[]> rows = reader.readAll();
 
@@ -37,16 +40,17 @@ public class DocumentReaderService {
                 long productId = Long.parseLong(row[0]);
                 long quantity = Long.parseLong(row[1]);
 
-                fileProcessorService.processCSVLine(productId, quantity);
+                executors.execute(() -> fileProcessorService.processCSVLine(productId, quantity));
             }
-            stopwatch.stop();
-            long elapsedMillis = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-            log.info("######################################### " + elapsedMillis);
+            executors.awaitTermination(5, TimeUnit.SECONDS);
+
+            stopwatch.stop();
+            log.info("######################################### " + stopwatch);
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (CsvException e) {
+        } catch (CsvException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
