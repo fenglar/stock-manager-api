@@ -27,6 +27,7 @@ public class FileProcessorService {
     @Retryable(maxAttemptsExpression = "${app.retry.count:5}", backoff = @Backoff(delay = 0))
     public void processCSVLine(Long productId, Long quantity) {
         try {
+            // TODO: try same solution without isolation but with Locking
             log.info("Starting thread [{}], with productId [{}] and quantity [{}]", Thread.currentThread().getName(), productId, quantity);
             Stock stock = stockRepository.findByProductId(productId).orElse(
                     Stock.builder()
