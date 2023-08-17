@@ -18,7 +18,7 @@ public class TestContainerInitializer implements ApplicationContextInitializer<G
     }
 
     static class MySqlDatabaseInitializer {
-        private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgis/postgis:15-3.3")
+        private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:15.4")
                 .asCompatibleSubstituteFor("postgres");
         private static final PostgreSQLContainer mySQLContainer = new PostgreSQLContainer<>(POSTGRES_IMAGE)
                 .withDatabaseName("testdb")
