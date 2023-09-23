@@ -46,13 +46,13 @@ public class DocumentReaderServiceIntegrationTest {
     }
 
     @Test
-    public void testReadCSVAndProcess() throws IOException, InterruptedException {
+    public void testReadCSVAndProcess() throws IOException {
         //given
         ClassPathResource resource = new ClassPathResource("csv-mocks/stock-update.csv");
         InputStream inputStream = resource.getInputStream();
 
         //when
-        documentReaderService.readCSV(inputStream);
+        documentReaderService.readCSVIsolationRepeatableRead(inputStream);
 
         //then
         Stock stock1 = stockRepository.findByProductId(1L).orElse(null);
@@ -71,5 +71,60 @@ public class DocumentReaderServiceIntegrationTest {
         Assertions.assertNotNull(stock6);
         Assertions.assertEquals(20L, stock6.getCurrentQuantity());
     }
+
+    @Test
+    public void testReadCSVAndOptimisticLock() throws IOException {
+        //given
+        ClassPathResource resource = new ClassPathResource("csv-mocks/stock-update.csv");
+        InputStream inputStream = resource.getInputStream();
+
+        //when
+        documentReaderService.readCSVOptimisticLock(inputStream);
+
+        //then
+        Stock stock1 = stockRepository.findByProductId(1L).orElse(null);
+        Assertions.assertNotNull(stock1);
+        Assertions.assertEquals(15L, stock1.getCurrentQuantity());
+
+        Stock stock2 = stockRepository.findByProductId(2L).orElse(null);
+        Assertions.assertNotNull(stock2);
+        Assertions.assertEquals(23L, stock2.getCurrentQuantity());
+
+        Stock stock3 = stockRepository.findByProductId(3L).orElse(null);
+        Assertions.assertNotNull(stock3);
+        Assertions.assertEquals(18L, stock3.getCurrentQuantity());
+
+        Stock stock6 = stockRepository.findByProductId(6L).orElse(null);
+        Assertions.assertNotNull(stock6);
+        Assertions.assertEquals(20L, stock6.getCurrentQuantity());
+    }
+
+    @Test
+    public void testReadCSVAndPessimisticLock() throws IOException {
+        //given
+        ClassPathResource resource = new ClassPathResource("csv-mocks/stock-update.csv");
+        InputStream inputStream = resource.getInputStream();
+
+        //when
+        documentReaderService.readCSVPessimisticWriterLock(inputStream);
+
+        //then
+        Stock stock1 = stockRepository.findByProductId(1L).orElse(null);
+        Assertions.assertNotNull(stock1);
+        Assertions.assertEquals(15L, stock1.getCurrentQuantity());
+
+        Stock stock2 = stockRepository.findByProductId(2L).orElse(null);
+        Assertions.assertNotNull(stock2);
+        Assertions.assertEquals(23L, stock2.getCurrentQuantity());
+
+        Stock stock3 = stockRepository.findByProductId(3L).orElse(null);
+        Assertions.assertNotNull(stock3);
+        Assertions.assertEquals(18L, stock3.getCurrentQuantity());
+
+        Stock stock6 = stockRepository.findByProductId(6L).orElse(null);
+        Assertions.assertNotNull(stock6);
+        Assertions.assertEquals(20L, stock6.getCurrentQuantity());
+    }
+
 
 }

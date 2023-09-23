@@ -8,11 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 import pl.marcin.stockmanagerapi.StockManagerApiApplication;
 import pl.marcin.stockmanagerapi.config.TestContainerInitializer;
 import pl.marcin.stockmanagerapi.services.DocumentReaderService;
@@ -24,7 +21,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -51,9 +47,9 @@ public class DocumentReaderControllerTest {
     public void testReadCSV() throws Exception {
 //        MockMultipartFile fileMock = new MockMultipartFile("fileMock", stateFile.);
 
-        documentReaderService.readCSV(stateFile.getInputStream());
+        documentReaderService.readCSVIsolationRepeatableRead(stateFile.getInputStream());
 //        doNothing().when(documentReaderService).readCSV(any(MultipartFile.class));
-        doNothing().when(fileProcessorService).processCSVLine(anyLong(), anyLong());
+        doNothing().when(fileProcessorService).processCSVLineRepeatableRead(anyLong(), anyLong());
 
 //        mockMvc.perform(multipart("/docs/csv")
 //                        .file(fileMock))

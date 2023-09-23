@@ -20,7 +20,7 @@ public class DocumentReaderController {
 
     @PostMapping("/csv")
     public ResponseEntity<String> readCSV(@RequestParam("file") MultipartFile file) throws IOException {
-    documentReaderService.readCSV(file.getInputStream());
+    documentReaderService.readCSVIsolationRepeatableRead(file.getInputStream());
         return ResponseEntity.ok("Successfully processed file");
     }
 }
