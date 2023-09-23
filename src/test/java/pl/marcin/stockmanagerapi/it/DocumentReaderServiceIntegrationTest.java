@@ -1,8 +1,8 @@
 package pl.marcin.stockmanagerapi.it;
 
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,12 +11,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import pl.marcin.stockmanagerapi.StockManagerApiApplication;
 import pl.marcin.stockmanagerapi.config.TestContainerInitializer;
-import pl.marcin.stockmanagerapi.entity.Product;
 import pl.marcin.stockmanagerapi.entity.Stock;
-import pl.marcin.stockmanagerapi.repository.ProductRepository;
 import pl.marcin.stockmanagerapi.repository.StockRepository;
 import pl.marcin.stockmanagerapi.services.DocumentReaderService;
-import pl.marcin.stockmanagerapi.services.FileProcessorService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,17 +26,23 @@ public class DocumentReaderServiceIntegrationTest {
     private DocumentReaderService documentReaderService;
 
     @Autowired
-    private FileProcessorService fileProcessorService;
-
-    @Autowired
     private StockRepository stockRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @AfterEach
+    @BeforeEach
     public void tearDown() {
         stockRepository.deleteAll();
+        stockRepository.save(Stock.builder()
+                .productId(1L)
+                .currentQuantity(10L)
+                .build());
+        stockRepository.save(Stock.builder()
+                .productId(2L)
+                .currentQuantity(20L)
+                .build());
+        stockRepository.save(Stock.builder()
+                .productId(3L)
+                .currentQuantity(5L)
+                .build());
     }
 
     @Test
