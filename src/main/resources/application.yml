@@ -11,7 +11,9 @@ spring:
     hibernate:
       ddl-auto: update
 #    database-platform: org.hibernate.dialect.MySQL55Dialect
-
+  batch:
+    jdbc:
+      initialize-schema: always
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
