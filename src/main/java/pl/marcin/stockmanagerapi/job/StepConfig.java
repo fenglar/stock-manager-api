@@ -11,25 +11,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 
 public class StepConfig {
-    static final String PROCESS_STOCK_UPDATES_STEP = "process-stock-updates-step";
+    static final String PROCESS_STOCK_UPDATES_STEP = "processStockUpdatesStep";
 
     @Autowired
     private StockUpdateReader stockUpdateReader;
-    @Autowired
-    private StockUpdateProcessor stockUpdateProcessor;
+
     @Autowired
     private StockUpdateWriter stockUpdateWriter;
 
     @Autowired
     private JdbcCursorItemReader<StockUpdate> productItemReader;
 
-    @Bean
-    @Qualifier(PROCESS_STOCK_UPDATES_STEP)
+    @Bean(PROCESS_STOCK_UPDATES_STEP)
     public Step processStockUpdatesStep(StepBuilderFactory stepBuilderFactory) {
         return stepBuilderFactory.get("processStockUpdatesStep")
                 .<StockUpdate, StockUpdate>chunk(10)
-                .reader(productItemReader)
-                .processor(stockUpdateProcessor)
+                .reader(stockUpdateReader)
                 .writer(stockUpdateWriter)
                 .build();
     }

@@ -10,16 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class JobLauncherBoundary {
 
     private final JobLauncher jobLauncher;
-    @Autowired
-    private Job stockSyncJob;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final Job stockSyncJob;
+    private final JdbcTemplate jdbcTemplate;
 
 
     @Scheduled(cron = "0 */2 * * * ?")
@@ -30,12 +30,5 @@ public class JobLauncherBoundary {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @AfterJob
-    public void clearDatabaseTable() {
-        jdbcTemplate.update("DELETE FROM stock_updates");
-        log.info("##### FINISH ############");
-
     }
 }
