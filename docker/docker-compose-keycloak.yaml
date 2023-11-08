@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  mysql-db:
+    image: mysql:8.2
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root00
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: keycloak00
+    ports:
+      - "3306:3306"
+    networks:
+      - sso
+
+  keycloak:
+    image: "quay.io/keycloak/keycloak:latest"
+    command:
+      - start-dev
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql-db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak00
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: Pa55w0rd
+    depends_on:
+      - "mysql-db"
+    ports:
+      - "8080:8080"
+    networks:
+      - sso
+
+networks:
+  sso:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
