@@ -15,7 +15,7 @@ public class StockUpdateReader extends JdbcCursorItemReader<StockUpdate> {
 
     public StockUpdateReader(DataSource dataSource)  {
         this.setDataSource(dataSource);
-        this.setSql("SELECT id FROM stock_updates");
+        this.setSql("SELECT id, product_id, quantity FROM stock_updates");
         this.setRowMapper(new BeanPropertyRowMapper<>(StockUpdate.class));
         this.setFetchSize(10);
     }

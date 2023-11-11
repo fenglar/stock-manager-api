@@ -1,8 +1,10 @@
 package pl.marcin.stockmanagerapi.job;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import pl.marcin.stockmanagerapi.entity.Stock;
 import pl.marcin.stockmanagerapi.repository.StockRepository;
@@ -12,9 +14,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Component
+@Slf4j
 public class StockUpdateWriter implements ItemWriter<StockUpdate> {
     private Map<Long, Long> productQuantityMap = new HashMap<>();
 
@@ -59,7 +62,7 @@ public class StockUpdateWriter implements ItemWriter<StockUpdate> {
                     .map(StockUpdate::getId)
                     .toList();
 
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
             String deleteSql = "DELETE FROM stock_updates WHERE id IN (:ids)";
             Map<String, Object> paramMap = Collections.singletonMap("ids", idsToDelete);
