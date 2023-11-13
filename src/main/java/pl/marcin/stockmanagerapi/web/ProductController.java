@@ -2,6 +2,7 @@ package pl.marcin.stockmanagerapi.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.marcin.stockmanagerapi.dto.ProductDto;
 import pl.marcin.stockmanagerapi.services.ProductService;
@@ -32,6 +33,18 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         return ResponseEntity.ok(productService.findAllProducts());
+    }
+
+    @GetMapping("/admintest")
+    @PreAuthorize("hasRole('client_admin')")
+    public String getAdmin() {
+        return "hello admin";
+    }
+
+    @GetMapping("/usertest")
+    @PreAuthorize("hasRole('client_user') or hasRole('client_admin')")
+    public String getUser() {
+        return "hello user";
     }
 
     @PatchMapping("/{productId}")

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
@@ -15,6 +15,12 @@ spring:
     jpa:
       repositories:
         enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/security
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 springdoc:
   swagger-ui:
@@ -23,3 +29,9 @@ springdoc:
 app:
   async-thread-pool:
     max-threads: 10
+
+jwt:
+  auth:
+    converter:
+      resource-id: login-app
+      principle-attribute: preferred_username
