@@ -21,6 +21,8 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/security
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  main:
+    allow-bean-definition-overriding: true
 
 springdoc:
   swagger-ui:
@@ -35,3 +37,24 @@ jwt:
     converter:
       resource-id: login-app
       principle-attribute: preferred_username
+
+paths:
+  /api/product:
+    get:
+      security:
+        - my_oAuth_security_schema:
+            - read_access
+
+securitySchemes:
+  my_oAuth_security_schema:
+    type: oauth2
+    flows:
+      implicit:
+        authorizationUrl: http://localhost:8080/oauth2/authorize
+        scopes:
+          read_access: read data
+          write_access: modify data
+
+keycloak:
+  auth-server-url: http://localhost:8080/
+  realm: security
