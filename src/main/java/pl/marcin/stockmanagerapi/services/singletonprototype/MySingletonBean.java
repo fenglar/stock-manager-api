@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class MySingletonBean {
 
     // reference: https://www.baeldung.com/spring-bean-scopes
-
     private final MyPrototypeBean myPrototypeBean;
     private final ObjectProvider<MyPrototypeBean> beanObjectProvider;
     private final ApplicationContext applicationContext;

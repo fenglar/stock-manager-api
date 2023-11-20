@@ -16,9 +16,10 @@ public class MyPrototypeBean {
     private final ZonedDateTime now = ZonedDateTime.now();
     private Long numberOfExecutions = 0L;
 
-
-    public void execute() {
+    public Long execute() {
         log.info("Now: {}", now);
         log.info("numberOfExecutions: {}", ++numberOfExecutions);
+
+        return numberOfExecutions;
     }
 }

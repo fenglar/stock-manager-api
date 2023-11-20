@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import pl.marcin.stockmanagerapi.StockManagerApiApplication;
 import pl.marcin.stockmanagerapi.config.TestContainerInitializer;
+import pl.marcin.stockmanagerapi.services.DocumentReaderService;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -20,6 +21,9 @@ class MySingletonBeanTest {
 
     @Autowired
     private MySingletonBean mySingletonBean;
+
+    @Autowired
+    private DocumentReaderService documentReaderService;
 
     @Test
     void executeFromDirectInjection() {

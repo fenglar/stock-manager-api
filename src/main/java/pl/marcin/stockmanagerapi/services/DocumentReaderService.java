@@ -3,29 +3,33 @@ package pl.marcin.stockmanagerapi.services;
 import com.google.common.base.Stopwatch;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import pl.marcin.stockmanagerapi.services.singletonprototype.MyPrototypeBean;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DocumentReaderService {
 
     private final FileProcessorService fileProcessorService;
+    private final MyPrototypeBean myPrototypeBean;
 
-
-    public DocumentReaderService(FileProcessorService fileProcessorService) {
-        this.fileProcessorService = fileProcessorService;
+    public long getNumberOfExecution() {
+        return myPrototypeBean.execute();
     }
-
 
     @Transactional
     public void readCSV(InputStream file) {
+        myPrototypeBean.execute();
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(file))) {
 
