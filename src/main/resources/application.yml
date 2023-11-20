@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/MARCINDB
-    username: root
-    password: ''
+    username: root1
+    password: root100
   jpa:
     show-sql: true
     hibernate:
