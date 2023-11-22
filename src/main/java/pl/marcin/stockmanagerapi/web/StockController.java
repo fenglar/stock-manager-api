@@ -1,6 +1,7 @@
 package pl.marcin.stockmanagerapi.web;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.marcin.stockmanagerapi.dto.StockDto;
 import pl.marcin.stockmanagerapi.entity.Stock;
@@ -25,11 +26,13 @@ public class StockController {
         return ResponseEntity.ok(stockService.getStock(productId));
     }
 
+    @Secured({"ROLE_USER"})
     @GetMapping("/allstocks")
     public ResponseEntity<List<StockDto>> getAllStocks() {
         return ResponseEntity.ok(stockService.getStocks());
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PostMapping()
     public ResponseEntity<StockDto> createNewStock(@RequestBody StockDto stockDto) {
         return ResponseEntity.ok(stockService.createStock(stockDto));
