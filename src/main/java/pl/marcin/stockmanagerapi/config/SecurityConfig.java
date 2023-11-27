@@ -15,12 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 @Configuration
+@EnableMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -33,7 +31,6 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .expressionHandler(customWebSecurityExpressionHandler())
                 .antMatchers(HttpMethod.GET, "/roleHierarchy")
                 .hasRole("STAFF")
                 .antMatchers("/swagger-ui/**", "/v2/api-docs", "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**").permitAll()
@@ -43,7 +40,7 @@ public class SecurityConfig {
         http
                 .oauth2ResourceServer()
                 .jwt()
-                .jwtAuthenticationConverter(jwtAuthConverter);
+                .jwtAuthenticationConverter(jwtAuthConverter());
 
         http
                 .sessionManagement()
@@ -52,11 +49,19 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER";
+        String hierarchy = """
+                ROLE_ADMIN > ROLE_STAFF
+                ROLE_STAFF > ROLE_USER""";
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
+    }
+
+    @Bean
+    JwtAuthConverter jwtAuthConverter() {
+        return new JwtAuthConverter(roleHierarchy());
     }
 
     @Bean

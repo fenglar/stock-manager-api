@@ -1,7 +1,9 @@
 package pl.marcin.stockmanagerapi.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
@@ -17,11 +18,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
+@RequiredArgsConstructor
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
             new JwtGrantedAuthoritiesConverter();
+
+    private final RoleHierarchy roleHierarchy;
 
     @Value("${jwt.auth.converter.principle-attribute}")
     private String principleAttribute;
@@ -31,8 +34,8 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         Collection<GrantedAuthority> authorities = Stream.concat(
-                jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
-                extractResourceRoles(jwt).stream())
+                        jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
+                        extractResourceRoles(jwt).stream())
                 .collect(Collectors.toSet());
         return new JwtAuthenticationToken(jwt, authorities, getPrincipleClamNane(jwt));
     }
@@ -58,9 +61,12 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         }
         resource = (Map<String, Object>) resourceAccess.get(resourceId);
         resourceRoles = (Collection<String>) resource.get("roles");
-        return resourceRoles
+
+        var grantedAuthorities = resourceRoles
                 .stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
+
+        return roleHierarchy.getReachableGrantedAuthorities(grantedAuthorities);
     }
 }
